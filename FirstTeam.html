@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顯示Google Sheets圖片</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container" id="image-container">
+        <!-- 圖片將由JavaScript動態插入 -->
+    </div>
+    <script>
+        async function loadImageFromSheet() {
+            const sheetId = '1COOG-OTMPIqRJNHjFsc4EBsOfA0Oc6bKQC6YLTErc-4';  // 替換為你的Google Sheets ID
+            const range = 'HTML!F1';  // 替換為你的儲存格範圍
+            const apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';  // 替換為你的API密鑰
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.values) {
+                    const imageUrl = data.values[0][0];  // 獲取儲存格中的圖片URL
+                    const imageContainer = document.getElementById('image-container');
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imgElement.alt = 'Image from Google Sheets';
+                    imageContainer.appendChild(imgElement);
+                } else {
+                    console.error('未能獲取圖片URL，請檢查儲存格內容');
+                }
+            } catch (error) {
+                console.error('無法從Google Sheets API獲取數據', error);
+            }
+        }
+
+        window.onload = loadImageFromSheet;
+    </script>
+</body>
+</html>
