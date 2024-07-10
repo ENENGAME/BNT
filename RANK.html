@@ -24,6 +24,7 @@
       width: 100%;
       text-align: center;
       border-radius: 10px;
+      opacity: 0; /* 隱藏表格，直到數據加載完畢 */
     }
     th, td {
       border-top: 1px solid #ffffff;
@@ -94,9 +95,16 @@
               row += '</tr>';
               $('tbody').append(row);
             }
-            $('table').css('opacity', 1);
+            $('table').css('opacity', 1);  // 顯示表格
+            adjustContainerHeight();  // 調整容器高度
           }
         });
+      }
+
+      function adjustContainerHeight() {
+        var container = $('.container');
+        var table = $('table');
+        container.height(table.outerHeight());
       }
 
       updateTable();
