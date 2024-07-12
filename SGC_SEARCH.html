@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FFSGC擊殺數查詢</title>
+  <!-- 加入favicon.ico的連結 -->
+  <link rel="icon" href="./PNG/FFSGC.ico" type="image/x-icon">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-image: url('./PNG/bg.jpg'); /* 替換為你的背景圖片路徑 */
+      background-size: cover; /* 背景圖片將填滿整個屏幕 */
+      background-position: center <strong>center</strong>;
+      background-repeat: no-repeat; /* 背景圖片不重複 */
+    }
+
+    .container {
+      background-color: rgba(192, 154, 248, 0.9); /* 用於容器的半透明背景 */
+
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 80%;
+    }
+
+    .search-button {
+      flex: 1;
+    }
+
+    .page-title {
+      text-align: center;
+      font-family: Arial, sans-serif; /* 添加字体系列 */
+      font-size: 30px;
+      margin-bottom: 40px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      padding: 30px; /* 調整標題欄的內邊距 */
+      color: white; /* 設置标题文字颜色为白色 */
+    }
+
+    .player-info p {
+      color: white; /* 設置玩家信息文字顏色為白色 */
+    }
+  </style>
+</head>
+<body>
+  <h3 class="page-title">FFSGC擊殺數查詢</h3>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <form id="search-form" class="form-inline" onsubmit="searchPlayers(); return false;">
+          <div class="search-container">
+            <img src="./PNG/FFSGC.png" alt="Search Icon" width="71.4" height="96">
+            <input class="search-input" type="text" id="searchtext" name="searchtext" placeholder="請輸入UID">
+            <button class="search-button btn btn-primary" type="submit">搜尋</button>
+          </div>
+        </form>
+        <div id="search-results" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const apiKey = 'AIzaSyDzJLX9I7vycDKg8RpVXINFpQN-WkOfpqo'; // 替換為你的 Google Sheets API 金鑰
+    const spreadsheetId = '1gSOQk8we6KzAHu5opl_fZX6JzW7B1leNolZqA5tBXFg'; // 替換為你的 Google Sheets 試算表 ID
+    const sheetName = '總擊殺表SORT!A:F'; // 替換為你的工作表名稱和搜尋範圍（A 到 E 欄）
+
+    function searchPlayers() {
+      const searchText = document.getElementById('searchtext').value;
+      const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}`;
+
+      // 發送請求到 Google Sheets API
+      axios.get(apiUrl)
+        .then(response => {
+          const values = response.data.values;
+          if (values) {
+            const searchResults = filterAndSortData(values, searchText); // 過濾和排序資料
+            displaySearchResults(searchResults);
+          } else {
+            document.getElementById('search-results').innerHTML = '<p>沒有找到任何數據。</p>';
+          }
+        })
+        .catch(error => {
+          console.error('搜尋失敗:', error);
+          document.getElementById('search-results').innerHTML = '<p>搜尋失敗。</p>';
+        });
+    }
+
+    function filterAndSortData(data, searchText) {
+      const filteredData = data.filter(row => row[3] === searchText); // 搜尋第二列（城市）
+      const playerMap = new Map();
+      filteredData.forEach(row => {
+        const name = row[0];
+        const time = new Date(row[0]);
+        if (!playerMap.has(name) || playerMap.get(name).time < time) {
+          playerMap.set(name, {time, data: row});
+        }
+      });
+      const sortedData = Array.from(playerMap.values()).map(entry => entry.data);
+      return sortedData;
+    }
+
+    function displaySearchResults(results) {
+      const searchResultsContainer = document.getElementById('search-results');
+      searchResultsContainer.innerHTML = ''; // 清空之前的搜索結果
+      if (results.length === 0) {
+        searchResultsContainer.innerHTML = '<p>戰隊中無此位選手。</p>';
+      } else {
+        results.forEach(player => {
+          const playerInfo = document.createElement('div');
+          playerInfo.classList.add('player-info');
+
+          const name = document.createElement('p');
+          name.textContent = '名次：'+ '第' + (player[0] || '無') + '名';
+
+          const uid = document.createElement('p');
+          uid.textContent = '選手暱稱：' + (player[2] || '無');
+
+          const gameName = document.createElement('p');
+          gameName.textContent = 'UID：' + (player[3] || '無');
+
+          const gender = document.createElement('p');
+          gender.textContent = '所屬隊伍：' + (player[4] || '無');
+
+          const position = document.createElement('p');
+          position.textContent = '總擊殺：' + (player[5] || '無') + '殺';
+          
+          const nickname = document.createElement('p');
+          nickname.textContent = '' + (player[100] || '');
+
+          // 添加圖片
+          const imageUrl = player[1]; // 假設第七欄是圖片URL
+          const img = document.createElement('img');
+          img.src = imageUrl || 'https://via.placeholder.com/100'; // 如果沒有圖片URL，顯示占位符圖片
+          img.alt = player[1] || '玩家圖片';
+          img.width = 100;
+
+          playerInfo.appendChild(name);
+          playerInfo.appendChild(uid);
+          playerInfo.appendChild(gameName);
+          playerInfo.appendChild(gender);
+          playerInfo.appendChild(position);
+          playerInfo.appendChild(nickname);
+          playerInfo.appendChild(img); // 添加圖片元素到playerInfo
+
+          searchResultsContainer.appendChild(playerInfo);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
