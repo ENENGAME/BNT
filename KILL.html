@@ -44,22 +44,24 @@
       background-repeat: no-repeat;
       padding: 30px;
       color: white;
+      font-weight: bold;
     }
 
     .player-info p {
-      color: white;
-      white-space: nowrap;
+      color: #777; /* 設置內容顏色 */
+      margin: 5px 0; /* 調整段落間距 */
     }
 
     .player-info {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start; /* 將search的回答靠左並切齊圖片 */
     }
 
     .player-info img {
       max-height: 100%;
       object-fit: contain;
+      margin-right: 10px; /* 調整圖片右邊距 */
     }
 
     .table-container {
@@ -121,6 +123,10 @@
         margin-top: 5px;
         width: 100%;
         text-align: center; /* 將選手名稱至中 */
+      }
+
+      .player-info {
+        justify-content: center; /* 將search的回答置中 */
       }
     }
   </style>
@@ -198,52 +204,54 @@
     }
 
     function displaySearchResults(results) {
-      const searchResultsContainer = document.getElementById('search-results');
-      searchResultsContainer.innerHTML = '';
-      if (results.length === 0) {
-        searchResultsContainer.innerHTML = '<p>戰隊中無此位選手。</p>';
-      } else {
-        results.forEach(player => {
-          const playerInfo = document.createElement('div');
-          playerInfo.classList.add('player-info');
+  const searchResultsContainer = document.getElementById('search-results');
+  searchResultsContainer.innerHTML = '';
+  if (results.length === 0) {
+    searchResultsContainer.innerHTML = '<p>戰隊中無此位選手。</p>';
+  } else {
+    results.forEach(player => {
+      const playerInfo = document.createElement('div');
+      playerInfo.classList.add('player-info');
 
-          const infoDiv = document.createElement('div');
-          infoDiv.style.flex = '1';
+      const infoDiv = document.createElement('div');
+      infoDiv.style.flex = '1';
 
-          const name = document.createElement('p');
-          name.textContent = '名次：第' + (player[0] || '無') + '名';
+      const name = document.createElement('p');
+      name.innerHTML = '<span style="color: #FFFFFF;">名次：<br></span><span style="color: #FFFF00;">第 ' + (player[0] || '無') + ' 名<br></span>';
 
-          const uid = document.createElement('p');
-          uid.textContent = '選手暱稱：' + (player[2] || '無');
+      const uid = document.createElement('p');
+      uid.innerHTML = '<span style="color: #FFFFFF;">選手暱稱：<br></span><span style="color: #FFFF00;">' + (player[2] || '無') + '<br></span>';
 
-          const gameName = document.createElement('p');
-          gameName.textContent = 'UID：' + (player[3] || '無');
+      const gameName = document.createElement('p');
+      gameName.innerHTML = '<span style="color: #FFFFFF;">UID：<br></span><span style="color: #FFFF00;">' + (player[3] || '無') + '<br></span>';
 
-          const gender = document.createElement('p');
-          gender.textContent = '所屬隊伍：' + (player[4] || '無');
+      const gender = document.createElement('p');
+      gender.innerHTML = '<span style="color: #FFFFFF;">所屬隊伍：<br></span><span style="color: #FFFF00;">' + (player[4] || '無') + '<br></span>';
 
-          const position = document.createElement('p');
-          position.textContent = '總擊殺：' + (player[5] || '無') + '殺';
+      const position = document.createElement('p');
+      position.innerHTML = '<span style="color: #FFFFFF;">總擊殺：<br></span><span style="color: #FFFF00;">' + (player[5] || '無') + ' 殺<br></span>';
 
-          infoDiv.appendChild(name);
-          infoDiv.appendChild(uid);
-          infoDiv.appendChild(gameName);
-          infoDiv.appendChild(gender);
-          infoDiv.appendChild(position);
+      infoDiv.appendChild(name);
+      infoDiv.appendChild(uid);
+      infoDiv.appendChild(gameName);
+      infoDiv.appendChild(gender);
+      infoDiv.appendChild(position);
 
-          const imageUrl = player[1];
-          const img = document.createElement('img');
-          img.src = imageUrl || 'https://via.placeholder.com/100';
-          img.alt = player[1] || '玩家圖片';
-          img.width = 100;
+      const imageUrl = player[1];
+      const img = document.createElement('img');
+      img.src = imageUrl || 'https://via.placeholder.com/100';
+      img.style.maxHeight = '100%'; // 確保圖片高度最大為其父容器高度
+      img.style.objectFit = 'contain'; // 確保等比例縮放
+      img.alt = player[1] || '玩家圖片';
+      img.width = 100;
 
-          playerInfo.appendChild(infoDiv);
-          playerInfo.appendChild(img);
+      playerInfo.appendChild(img);
+      playerInfo.appendChild(infoDiv);
 
-          searchResultsContainer.appendChild(playerInfo);
-        });
-      }
-    }
+      searchResultsContainer.appendChild(playerInfo);
+    });
+  }
+}
 
     function updateTable() {
       const apiKey = 'AIzaSyA8Hsr_UTm3eyHC43-ZadQp-6J8eJBIIlk';
