@@ -1,131 +1,164 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-  <link rel="stylesheet" href="./png/font.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>動態生成表格</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family:  "GFF Latin",'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    }
-    .container {
-      padding: 0px;
-      border-radius: 35px;
-      box-shadow: 0 px 1px rgba(0, 0, 0, 0.5);
-      background-color: rgba(84, 84, 84, 0);
-      width: 100%;
-      margin: 0 auto;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      text-align: center;
-      border-radius: 10px;
-      opacity: 0; /* 隱藏表格，直到數據加載完畢 */
-    }
-    th, td {
-      border-top: 1px solid #ffffff;
-      padding: 7px;
-      color: white;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    th {
-      background-color: #e276f9;
-      font-style: italic;
-      border-left: 0px solid #999;
-      width: 1%;
-    }
-    th:nth-child(2), th:nth-child(3), th:nth-child(4), th:nth-child(5), th:nth-child(6), th:nth-child(7), th:nth-child(8) {
-      width: calc(100% / 10);
-    }
-    .team-logo {
-      width: 45px;
-      height: 55px;
-      vertical-align: middle;
-    }
-    .player-info {
-      display: flex;
-      align-items: center;
-    }
-    .player-name {
-      margin-left: 10px;
-      word-wrap: break-word;
-    }
-    @media (max-width: 768px) {
-      .player-info {
-        flex-direction: column;
-      }
-      .player-name {
-        margin-left: 0;
-        margin-top: 5px;
-      }
-    }
-  </style>
-  <script>
-    $(document).ready(function() {
-      var apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';
-      var spreadsheetId = '1COOG-OTMPIqRJNHjFsc4EBsOfA0Oc6bKQC6YLTErc-4';
-      var sheetName = 'HTML2';
-      var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + sheetName + '?key=' + apiKey;
-      var defaultImage = 'https://enengame.github.io/FFTET/default.png';
-
-      function updateTable() {
-        $.ajax({
-          url: url,
-          dataType: 'json',
-          success: function(data) {
-            var values = data.values;
-            $('tbody').empty();
-
-            for (var i = 0; i < values.length; i++) {
-              var row = '<tr>';
-              for (var j = 0; j < values[i].length; j++) {
-                if (j === 10) {
-                  var imgSrc = values[i][j] ? values[i][j] : defaultImage;
-                  row += '<td><div class="player-info"><img src="' + imgSrc + '" class="team-logo"><div class="player-name">' + values[i][j + 1] + '</div></div></td>';
-                  j++;
-                } else {
-                  row += '<td>' + values[i][j] + '</td>';
-                }
-              }
-              row += '</tr>';
-              $('tbody').append(row);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顯示Google Sheets圖片和動態生成表格</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0); /* 設定背景顏色 */
+        }
+        .image-container, .container {
+            width: 100%;
+            max-width: 1200px; /* 設置最大寬度 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px; /* 調整外邊距 */
+            box-sizing: border-box; /* 包含內邊距和邊框 */
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            width: auto;
+        }
+        .container {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+            background-color: rgba(84, 84, 84, 0);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+            border-radius: 10px;
+            opacity: 0; /* 隱藏表格，直到數據加載完畢 */
+        }
+        th, td {
+            border-top: 1px solid #ffffff;
+            padding: 7px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        th {
+            background-color: #e276f9;
+            font-style: italic;
+            width: calc(100% / 4);
+        }
+        .team-logo {
+            width: 45px;
+            height: 55px;
+            vertical-align: middle;
+        }
+        .player-info {
+            display: flex;
+            align-items: center;
+        }
+        .player-name {
+            margin-left: 10px;
+            word-wrap: break-word;
+        }
+        @media (max-width: 768px) {
+            .player-info {
+                flex-direction: column;
             }
-            $('table').css('opacity', 1);  // 顯示表格
-            adjustContainerHeight();  // 調整容器高度
-          }
-        });
-      }
-
-      function adjustContainerHeight() {
-        var container = $('.container');
-        var table = $('table');
-        container.height(table.outerHeight());
-      }
-
-      updateTable();
-      setInterval(updateTable, 15000);
-    });
-  </script>
+            .player-name {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <table>
-      <thead>
-        <tr>
-          <th>RANK</th>
-          <th>TEAM</th>
-          <th>KILL</th>
-          <th>GRADE</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+    <div class="image-container" id="image-container">
+        <!-- 圖片將由JavaScript動態插入 -->
+    </div>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>RANK</th>
+                    <th>TEAM</th>
+                    <th>KILL</th>
+                    <th>GRADE</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadImageFromSheet() {
+            const sheetId = '1COOG-OTMPIqRJNHjFsc4EBsOfA0Oc6bKQC6YLTErc-4';  // 替換為你的Google Sheets ID
+            const range = 'HTML!F1';  // 替換為你的儲存格範圍
+            const apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';  // 替換為你的API密鑰
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.values) {
+                    const imageUrl = data.values[0][0];  // 獲取儲存格中的圖片URL
+                    const imageContainer = document.getElementById('image-container');
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imgElement.alt = 'Image from Google Sheets';
+                    imageContainer.appendChild(imgElement);
+                } else {
+                    console.error('未能獲取圖片URL，請檢查儲存格內容');
+                }
+            } catch (error) {
+                console.error('無法從Google Sheets API獲取數據', error);
+            }
+        }
+
+        $(document).ready(function() {
+            var apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';
+            var spreadsheetId = '1COOG-OTMPIqRJNHjFsc4EBsOfA0Oc6bKQC6YLTErc-4';
+            var sheetName = 'HTML2';
+            var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + sheetName + '?key=' + apiKey;
+            var defaultImage = 'https://enengame.github.io/FFTET/default.png';
+
+            function updateTable() {
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    success: function(data) {
+                        var values = data.values;
+                        $('tbody').empty();
+
+                        for (var i = 0; i < values.length; i++) {
+                            var row = '<tr>';
+                            for (var j = 0; j < values[i].length; j++) {
+                                if (j === 10) {
+                                    var imgSrc = values[i][j] ? values[i][j] : defaultImage;
+                                    row += '<td><div class="player-info"><img src="' + imgSrc + '" class="team-logo"><div class="player-name">' + values[i][j + 1] + '</div></div></td>';
+                                    j++;
+                                } else {
+                                    row += '<td>' + values[i][j] + '</td>';
+                                }
+                            }
+                            row += '</tr>';
+                            $('tbody').append(row);
+                        }
+                        $('table').css('opacity', 1);  // 顯示表格
+                    }
+                });
+            }
+
+            loadImageFromSheet();
+            updateTable();
+            setInterval(updateTable, 15000);
+        });
+    </script>
 </body>
 </html>
