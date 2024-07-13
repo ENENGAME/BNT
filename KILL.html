@@ -184,8 +184,8 @@
           }
         })
         .catch(error => {
-          console.error('搜尋失敗:', error);
-          document.getElementById('search-results').innerHTML = '<p>搜尋失敗。</p>';
+          console.error('未知錯誤:', error);
+          document.getElementById('search-results').innerHTML = '<p>未知錯誤。</p>';
         });
     }
 
@@ -207,7 +207,7 @@
   const searchResultsContainer = document.getElementById('search-results');
   searchResultsContainer.innerHTML = '';
   if (results.length === 0) {
-    searchResultsContainer.innerHTML = '<p>戰隊中無此位選手。</p>';
+    searchResultsContainer.innerHTML = '<p>賽事中無此位選手。</p>';
   } else {
     results.forEach(player => {
       const playerInfo = document.createElement('div');
