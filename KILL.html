@@ -15,7 +15,7 @@
     .container {
       padding: 0px;
       border-radius: 35px;
-      box-shadow: 0 px 1px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 px 1px rgba(0, 0, 0, 0);
       background-color: rgba(0, 0, 0, 0);
       width: 100%;
       margin: 0 auto;
@@ -54,6 +54,7 @@
     .player-name {
       margin-left: 10px;
       word-wrap: break-word;
+      white-space: nowrap; /* 確保文字不會因寬度變窄而換行 */
     }
     @media (max-width: 768px) {
       .player-info {
