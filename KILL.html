@@ -1,118 +1,155 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
-  <link rel="stylesheet" href="./png/font.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>動態生成表格</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>FFSGC擊殺數查詢</title>
+  <link rel="icon" href="./PNG/FFSGC.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./png/font.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family:  "GFF Latin",'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      background-color: rgba(255, 255, 255, 0);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
+
     .container {
-      padding: 0px;
-      border-radius: 35px;
-      box-shadow: 0 px 1px rgba(0, 0, 0, 0);
-      background-color: rgba(0, 0, 0, 0);
-      width: 100%;
-      margin: 0 auto;
+      background-color: rgba(192, 154, 248, 0.2);
+      padding: 20px;
+      border-radius: 10px;
     }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 80%;
+    }
+
+    .search-button {
+      flex: 1;
+    }
+
+    .page-title {
+      text-align: center;
+      font-family: "GFF Latin";
+      font-size: 30px;
+      margin-bottom: 40px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      padding: 30px;
+      color: white;
+    }
+
+    .player-info p {
+      color: white;
+      white-space: nowrap;
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .player-info img {
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .table-container {
+      margin-top: 20px;
+    }
+
     table {
       border-collapse: collapse;
       width: 100%;
       text-align: center;
       border-radius: 10px;
     }
-    th, td {
+
+    th,
+    td {
       border-top: 1px solid #ffffff;
       padding: 7px;
       color: white;
       font-weight: bold;
       font-size: 16px;
     }
+
     th {
       background-color: #e276f9;
       font-style: italic;
       border-left: 0px solid #999;
-      width: 1%;
     }
-    th:nth-child(2), th:nth-child(3), th:nth-child(4), th:nth-child(5), th:nth-child(6), th:nth-child(7), th:nth-child(8) {
-      width: calc(100% / 10);
-    }
+
     .team-logo {
       width: 37px;
       height: 65px;
       vertical-align: middle;
     }
-    .player-info {
+
+    .player-name {
+      word-wrap: break-word;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-info-group {
       display: flex;
       align-items: center;
+      justify-content: flex-start;
     }
-    .player-name {
-      margin-left: 10px;
-      word-wrap: break-word;
-      white-space: nowrap; /* 確保文字不會因寬度變窄而換行 */
+
+    .left-align {
+      text-align: left;
     }
+
     @media (max-width: 768px) {
-      .player-info {
+      .player-info-group {
         flex-direction: column;
+        align-items: center; /* 將選手名稱至中 */
       }
+
       .player-name {
-        margin-left: 0;
         margin-top: 5px;
+        width: 100%;
+        text-align: center; /* 將選手名稱至中 */
       }
     }
   </style>
-  <script>
-    $(document).ready(function() {
-      var apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';
-      var spreadsheetId = '1gSOQk8we6KzAHu5opl_fZX6JzW7B1leNolZqA5tBXFg';
-      var sheetName = 'HTML';
-      var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + spreadsheetId + '/values/' + sheetName + '?key=' + apiKey;
-      var defaultImage = 'https://enengame.github.io/BNT/default.png';
-
-      function updateTable() {
-        $.ajax({
-          url: url,
-          dataType: 'json',
-          success: function(data) {
-            var values = data.values;
-            $('tbody').empty();
-
-            for (var i = 0; i < values.length; i++) {
-              var row = '<tr>';
-              for (var j = 0; j < values[i].length; j++) {
-                if (j === 1) {
-                  var imgSrc = values[i][j] ? values[i][j] : defaultImage;
-                  row += '<td><div class="player-info"><img src="' + imgSrc + '" class="team-logo"><div class="player-name">' + values[i][j + 1] + '</div></div></td>';
-                  j++;
-                } else {
-                  row += '<td>' + values[i][j] + '</td>';
-                }
-              }
-              row += '</tr>';
-              $('tbody').append(row);
-            }
-            $('table').css('opacity', 1);
-          }
-        });
-      }
-
-      updateTable();
-      setInterval(updateTable, 15000);
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
   <div class="container">
+    <div class="row">
+      <div class="col">
+        <form id="search-form" class="form-inline" onsubmit="searchPlayers(); return false;">
+          <div class="search-container">
+            <img src="./png/FFSGC.png" alt="Search Icon" width="71.4" height="96">
+            <input class="search-input" type="text" id="searchtext" name="searchtext" placeholder="請輸入UID">
+            <button class="search-button btn btn-primary" type="submit">搜尋</button>
+          </div>
+        </form>
+        <div id="search-results" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container table-container">
     <table>
       <thead>
         <tr>
           <th>RANK</th>
-          <th>NAME</th>
+          <th class="left-align">NAME</th>
           <th>TEAM</th>
           <th>KILLS</th>
         </tr>
@@ -120,5 +157,130 @@
       <tbody></tbody>
     </table>
   </div>
+
+  <script>
+    const apiKey = 'AIzaSyDzJLX9I7vycDKg8RpVXINFpQN-WkOfpqo';
+    const spreadsheetId = '1gSOQk8we6KzAHu5opl_fZX6JzW7B1leNolZqA5tBXFg';
+    const sheetName = '總擊殺表SORT!A:F';
+
+    function searchPlayers() {
+      const searchText = document.getElementById('searchtext').value;
+      const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}`;
+
+      axios.get(apiUrl)
+        .then(response => {
+          const values = response.data.values;
+          if (values) {
+            const searchResults = filterAndSortData(values, searchText);
+            displaySearchResults(searchResults);
+          } else {
+            document.getElementById('search-results').innerHTML = '<p>沒有找到任何數據。</p>';
+          }
+        })
+        .catch(error => {
+          console.error('搜尋失敗:', error);
+          document.getElementById('search-results').innerHTML = '<p>搜尋失敗。</p>';
+        });
+    }
+
+    function filterAndSortData(data, searchText) {
+      const filteredData = data.filter(row => row[3] === searchText);
+      const playerMap = new Map();
+      filteredData.forEach(row => {
+        const name = row[0];
+        const time = new Date(row[0]);
+        if (!playerMap.has(name) || playerMap.get(name).time < time) {
+          playerMap.set(name, { time, data: row });
+        }
+      });
+      const sortedData = Array.from(playerMap.values()).map(entry => entry.data);
+      return sortedData;
+    }
+
+    function displaySearchResults(results) {
+      const searchResultsContainer = document.getElementById('search-results');
+      searchResultsContainer.innerHTML = '';
+      if (results.length === 0) {
+        searchResultsContainer.innerHTML = '<p>戰隊中無此位選手。</p>';
+      } else {
+        results.forEach(player => {
+          const playerInfo = document.createElement('div');
+          playerInfo.classList.add('player-info');
+
+          const infoDiv = document.createElement('div');
+          infoDiv.style.flex = '1';
+
+          const name = document.createElement('p');
+          name.textContent = '名次：第' + (player[0] || '無') + '名';
+
+          const uid = document.createElement('p');
+          uid.textContent = '選手暱稱：' + (player[2] || '無');
+
+          const gameName = document.createElement('p');
+          gameName.textContent = 'UID：' + (player[3] || '無');
+
+          const gender = document.createElement('p');
+          gender.textContent = '所屬隊伍：' + (player[4] || '無');
+
+          const position = document.createElement('p');
+          position.textContent = '總擊殺：' + (player[5] || '無') + '殺';
+
+          infoDiv.appendChild(name);
+          infoDiv.appendChild(uid);
+          infoDiv.appendChild(gameName);
+          infoDiv.appendChild(gender);
+          infoDiv.appendChild(position);
+
+          const imageUrl = player[1];
+          const img = document.createElement('img');
+          img.src = imageUrl || 'https://via.placeholder.com/100';
+          img.alt = player[1] || '玩家圖片';
+          img.width = 100;
+
+          playerInfo.appendChild(infoDiv);
+          playerInfo.appendChild(img);
+
+          searchResultsContainer.appendChild(playerInfo);
+        });
+      }
+    }
+
+    function updateTable() {
+      const apiKey = 'AIzaSyA8Hsr_UTm3eyHC43-ZadQp-6J8eJBIIlk';
+      const spreadsheetId = '1gSOQk8we6KzAHu5opl_fZX6JzW7B1leNolZqA5tBXFg';
+      const sheetName = 'HTML';
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}`;
+      const defaultImage = 'https://enengame.github.io/BNT/default.png';
+
+      $.ajax({
+        url: url,
+        dataType: 'json',
+        success: function(data) {
+          const values = data.values;
+          $('tbody').empty();
+
+          for (let i = 0; i < values.length; i++) {
+            let row = '<tr>';
+            for (let j = 0; j < values[i].length; j++) {
+              if (j === 1) {
+                const imgSrc = values[i][j] ? values[i][j] : defaultImage;
+                row += '<td class="left-align"><div class="player-info-group"><img src="' + imgSrc + '" class="team-logo"><div class="player-name">' + values[i][j + 1] + '</div></div></td>';
+                j++;
+              } else {
+                row += '<td>' + values[i][j] + '</td>';
+              }
+            }
+            row += '</tr>';
+            $('tbody').append(row);
+          }
+          $('table').css('opacity', 1);
+        }
+      });
+    }
+
+    updateTable();
+    setInterval(updateTable, 15000);
+  </script>
 </body>
+
 </html>
