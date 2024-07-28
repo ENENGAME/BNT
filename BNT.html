@@ -11,7 +11,7 @@
   <link rel="icon" href="https://enentsel.github.io/BNT/BNT.ico" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="./FFWL 女槍神聯賽_files/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-  <script src="./FFWL 女槍神聯賽_files/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+  <script src="./FFWL 女槍神聯賽_files/bootstrap.bundle.min.js.下載" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./FFWL 女槍神聯賽_files/BNT.css">
   <title>BNT 官網</title>
   <style>
@@ -63,7 +63,7 @@
     </div>
     <div class="Text"></div>
   </div>
-
+  <!DOCTYPE html>
   <html lang="en">
   <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -84,16 +84,18 @@
         flex: 1;
       }
       .page-title {
-        text-align: center;
-        font-family: Arial, sans-serif;
-        font-size: 30px;
-        font-weight: 1000;
-        margin-bottom: 40px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        padding: 30px;
-        color: rgb(255, 255, 255);
-      }
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  font-weight: 1000; /* 新增字體粗度，使用數值 */
+  margin-bottom: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 30px;
+  color: rgb(255, 255, 255);
+}
+
+
       .player-info p {
         color: rgb(255, 255, 255);
       }
@@ -123,7 +125,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      const apiKey = 'AIzaSyDzJLX9I7vycDKg8RpVXINFpQN-WkOfpqo';
+      const apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';
       const spreadsheetId = '1Bfl9dA41ouI3RpNRSpcHrEOz7Hqthg-BMTskFSkqRRU'; // 固定的試算表ID
       let sheetName = '合併!A:L'; // 初始化为空
   
@@ -158,7 +160,7 @@
       }
   
       function filterAndSortData(data, searchText) {
-        const filteredData = data.filter(row => row[6] === searchText);
+        const filteredData = data.filter(row => row[3] === searchText);
         const playerMap = new Map();
         filteredData.forEach(row => {
           const name = row[0];
@@ -181,32 +183,32 @@
             const playerInfo = document.createElement('div');
             playerInfo.classList.add('player-info');
   
-            const name = document.createElement('p');
-            name.textContent = '遊戲名：' + (player[2] || '無');
+            const gameName = document.createElement('p');
+            gameName.textContent = '遊戲名：' + (player[2] || '無');
   
             const uidDisplay = document.createElement('p');
-            uidDisplay.textContent = 'UID：' + (player[5] || '無');
+            uidDisplay.textContent = 'UID：' + (player[3] || '無');
 
-            const uid = document.createElement('p');
-            uid.textContent = '暱稱：' + (player[3] || '無');
+            const position = document.createElement('p');
+            position.textContent = '職位：' + (player[4] || '無');
 
-            const gameName = document.createElement('p');
-            gameName.textContent = '玩家類型：' + (player[4] || '無');
+            const nickname = document.createElement('p');
+            nickname.textContent = '暱稱：' + (player[5] || '無');
 
-            const Commendation = document.createElement('p');
-            Commendation.textContent = '嘉獎：' + (player[10] || '無');
+            const playerType = document.createElement('p');
+            playerType.textContent = '玩家類型：' + (player[6] || '無');
 
-            const warn = document.createElement('p');
-            warn.textContent = '警告：' + (player[11] || '無');
+            const commendation = document.createElement('p');
+            commendation.textContent = '嘉獎：' + (player[7] || '無');
+
+            const warning = document.createElement('p');
+            warning.textContent = '警告：' + (player[8] || '無');
   
             const joinDate = document.createElement('p');
-            joinDate.textContent = '進BNT日期：' + (player[6] || '無');
+            joinDate.textContent = '進BNT日期：' + (player[9] || '無');
   
             const duration = document.createElement('p');
-            duration.textContent = '累積時長：' + (player[7] || '無');
-  
-            const nickname = document.createElement('p');
-            nickname.textContent = '' + (player[8] || '');
+            duration.textContent = '累積時長：' + (player[10] || '無');
   
             const imgUrl1 = player[0];
             const img1 = document.createElement('img');
@@ -218,15 +220,15 @@
             img2.src = imgUrl2 || 'https://via.placeholder.com/640x296';
             img2.alt = '玩家圖片2';
   
-            playerInfo.appendChild(name);
-            playerInfo.appendChild(uid);
             playerInfo.appendChild(gameName);
             playerInfo.appendChild(uidDisplay);
+            playerInfo.appendChild(position);
+            playerInfo.appendChild(nickname);
+            playerInfo.appendChild(playerType);
+            playerInfo.appendChild(commendation);
+            playerInfo.appendChild(warning);
             playerInfo.appendChild(joinDate);
             playerInfo.appendChild(duration);
-            playerInfo.appendChild(nickname);
-            playerInfo.appendChild(Commendation);
-            playerInfo.appendChild(warn);
             playerInfo.appendChild(img1);
             playerInfo.appendChild(img2);
   
