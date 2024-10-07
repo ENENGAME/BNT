@@ -187,9 +187,9 @@ tbody tr:not(:first-child) td {
   </div>
 
   <script>
-    const apiKey = 'AIzaSyB0pjUimtoomamQ9BVPGwIB-36VNFlVlds';
-    const spreadsheetId = '18lja6A3OjGVBuGkVdnmH2oZEJKtYQU_SoxOnI2shovk';
-    const sheetName = 'KILLHTML!G:K';
+    var apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';
+      var spreadsheetId = '1gSOQk8we6KzAHu5opl_fZX6JzW7B1leNolZqA5tBXFg';
+      var sheetName = '總擊殺表SORT';
 
     function searchPlayers() {
       const searchText = document.getElementById('searchtext').value;
@@ -226,44 +226,58 @@ tbody tr:not(:first-child) td {
     }
 
     function displaySearchResults(results) {
-      const searchResultsContainer = document.getElementById('search-results');
-      searchResultsContainer.innerHTML = '';
-      if (results.length === 0) {
-        searchResultsContainer.innerHTML = '<p>賽事中無此位選手。</p>';
-      } else {
-        results.forEach(player => {
-          const playerInfo = document.createElement('div');
-          playerInfo.classList.add('player-info');
+  const searchResultsContainer = document.getElementById('search-results');
+  searchResultsContainer.innerHTML = '';
+  
+  if (results.length === 0) {
+    searchResultsContainer.innerHTML = '<p>賽事中無此位選手。</p>';
+  } else {
+    results.forEach(player => {
+      const playerInfo = document.createElement('div');
+      playerInfo.classList.add('player-info');
 
-          const infoDiv = document.createElement('div');
-          infoDiv.style.flex = '1';
+      const infoDiv = document.createElement('div');
+      infoDiv.style.flex = '1';
 
-          const name = document.createElement('p');
-          name.innerHTML = '<span style="color: #FFFFFF;">名次：<br></span><span style="color: #ff0000;">第 ' + (player[0] || '無') + ' 名<br></span>';
+      const name = document.createElement('p');
+      name.innerHTML = '<span style="color: #FFFFFF;">名次：<br></span><span style="color: #FFFF00;">第 ' + (player[0] || '無') + ' 名<br></span>';
 
-          const uid = document.createElement('p');
-          uid.innerHTML = '<span style="color: #FFFFFF;">選手暱稱：<br></span><span style="color: #ff0000;">' + (player[1] || '無') + '<br></span>';
+      const uid = document.createElement('p');
+      uid.innerHTML = '<span style="color: #FFFFFF;">選手暱稱：<br></span><span style="color: #FFFF00;">' + (player[2] || '無') + '<br></span>';
 
-          const gameName = document.createElement('p');
-          gameName.innerHTML = '<span style="color: #FFFFFF;">UID：<br></span><span style="color: #ff0000;">' + (player[2] || '無') + '<br></span>';
+      const gameName = document.createElement('p');
+      gameName.innerHTML = '<span style="color: #FFFFFF;">UID：<br></span><span style="color: #FFFF00;">' + (player[3] || '無') + '<br></span>';
 
-          const gender = document.createElement('p');
-          gender.innerHTML = '<span style="color: #FFFFFF;">所屬隊伍：<br></span><span style="color: #ff0000;">' + (player[3] || '無') + '<br></span>';
+      const gender = document.createElement('p');
+      gender.innerHTML = '<span style="color: #FFFFFF;">所屬隊伍：<br></span><span style="color: #FFFF00;">' + (player[4] || '無') + '<br></span>';
 
-          const position = document.createElement('p');
-          position.innerHTML = '<span style="color: #FFFFFF;">總擊殺：<br></span><span style="color: #ff0000;">' + (player[4] || '無') + ' 殺<br></span>';
+      const position = document.createElement('p');
+      position.innerHTML = '<span style="color: #FFFFFF;">總擊殺：<br></span><span style="color: #FFFF00;">' + (player[5] || '無') + ' 殺<br></span>';
 
-          infoDiv.appendChild(name);
-          infoDiv.appendChild(uid);
-          infoDiv.appendChild(gameName);
-          infoDiv.appendChild(gender);
-          infoDiv.appendChild(position);
-          playerInfo.appendChild(infoDiv);
+      // 如果表格中有圖片的 URL，將它添加到 img 標籤中
+      const img = document.createElement('img');
+      const imageUrl = player[1]; // 假設第7列是圖片URL
+      img.src = imageUrl || 'https://enengame.github.io/BNT/default.png'; // 默認圖片
+      img.style.maxWidth = '216px'; // 設置圖片的最大寬度
+      img.style.maxHeight = '260px'; // 設置圖片的最大高度
+      img.style.width = 'auto'; // 保持圖片寬高比
+      img.style.height = 'auto'; // 保持圖片寬高比
+      img.style.marginRight = '10px'; // 調整圖片與文字的距離
 
-          searchResultsContainer.appendChild(playerInfo);
-        });
-      }
-    }
+      playerInfo.appendChild(img); // 添加圖片到選手資料旁
+      playerInfo.appendChild(infoDiv);
+
+      infoDiv.appendChild(name);
+      infoDiv.appendChild(uid);
+      infoDiv.appendChild(gameName);
+      infoDiv.appendChild(gender);
+      infoDiv.appendChild(position);
+
+      searchResultsContainer.appendChild(playerInfo);
+    });
+  }
+}
+
 
     function updateTable() {
         var apiKey = 'AIzaSyDCpZh3hJxy5VEDXBTqkSkauHuR99CXIvk';
