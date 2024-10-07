@@ -212,7 +212,7 @@ tbody tr:not(:first-child) td {
     }
 
     function filterAndSortData(data, searchText) {
-      const filteredData = data.filter(row => row[2] === searchText);
+      const filteredData = data.filter(row => row[3] === searchText);
       const playerMap = new Map();
       filteredData.forEach(row => {
         const name = row[0];
