@@ -36,7 +36,7 @@
 
 2.輸入註解
 
-2.確認上傳
+3.確認上傳
 
  ![推送變更](https://enengame.github.io/BNT/teach/3.jpg)
    *圖 2：上傳教學*
